@@ -203,7 +203,8 @@ def main():
     inject_css()
 
     # ── ヘッダー ──
-    h_left, h_center, h_right = st.columns([4, 2, 3])
+    # レイアウト調整: 中央を広げる [3, 4, 3]
+    h_left, h_center, h_right = st.columns([3, 4, 3])
     with h_left:
         st.markdown("""
         <div style="display:flex; align-items:center; gap:12px;">
@@ -212,7 +213,6 @@ def main():
                     <span class="logo">17</span>
                     <div>
                         <div class="title">TOPIX-17業種 ETFチャート監視モニター</div>
-                        <div class="subtitle">TOPIX-17 Sector ETF Dashboard</div>
                     </div>
                 </div>
             </div>
@@ -220,12 +220,22 @@ def main():
         """, unsafe_allow_html=True)
 
     with h_center:
-        mode = st.radio(
-            "チャートモード",
-            ["5分足", "日足"],
-            horizontal=True,
-            key="chart_mode",
-        )
+        # チャートモードと並び順を横並びにする
+        c_mode, c_sort = st.columns(2)
+        with c_mode:
+            mode = st.radio(
+                "チャートモード",
+                ["5分足", "日足"],
+                horizontal=True,
+                key="chart_mode",
+            )
+        with c_sort:
+            sort_order = st.radio(
+                "並び順",
+                ["コード順", "上昇率順", "下落率順"],
+                horizontal=True,
+                key="sort_order",
+            )
 
     with h_right:
         last_update = get_last_update()
@@ -253,6 +263,21 @@ def main():
 
     # ── グリッド表示 ──
     sector_list = list(SECTORS.items())
+
+    # 並び替えロジック
+    if sort_order != "コード順":
+        def get_change_percent(item):
+            qcode = item[0]
+            info = price_data.get(qcode, {})
+            pct_str = info.get("changePercent", "0.00%")
+            try:
+                # "+0.68%" -> 0.68, "-5.92%" -> -5.92
+                return float(pct_str.replace("%", "").replace("+", ""))
+            except ValueError:
+                return -999.0
+
+        reverse = True if sort_order == "上昇率順" else False
+        sector_list.sort(key=get_change_percent, reverse=reverse)
 
     for row_start in range(0, len(sector_list), COLS_PER_ROW):
         row_sectors = sector_list[row_start:row_start + COLS_PER_ROW]
