@@ -271,8 +271,9 @@ def main():
             info = price_data.get(qcode, {})
             pct_str = info.get("changePercent", "0.00%")
             try:
-                # "+0.68%" -> 0.68, "-5.92%" -> -5.92
-                return float(pct_str.replace("%", "").replace("+", ""))
+                # "(+0.68%)" -> 0.68, "(-5.92%)" -> -5.92
+                clean_str = pct_str.replace("(", "").replace(")", "").replace("%", "").replace("+", "")
+                return float(clean_str)
             except ValueError:
                 return -999.0
 
