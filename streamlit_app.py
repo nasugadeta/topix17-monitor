@@ -42,7 +42,7 @@ SECTORS = {
 
 SCREENSHOT_DIR = Path(__file__).parent / "screenshots"
 PRICE_DATA_FILE = SCREENSHOT_DIR / "price_data.json"
-COLS_PER_ROW = 4
+COLS_PER_ROW = 3
 AUTO_REFRESH_SEC = 300  # 5分
 
 
