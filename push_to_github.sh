@@ -17,7 +17,10 @@ import jpholiday, datetime
 now = datetime.datetime.now()
 is_weekend = now.weekday() >= 5
 is_holiday = jpholiday.is_holiday(now.date())
-is_time_ok = datetime.time(9, 0) <= now.time() <= datetime.time(15, 30)
+t = now.time()
+is_morning = datetime.time(9, 0) <= t <= datetime.time(11, 30)
+is_afternoon = datetime.time(12, 30) <= t <= datetime.time(15, 30)
+is_time_ok = is_morning or is_afternoon
 
 if not is_weekend and not is_holiday and is_time_ok:
     exit(0)

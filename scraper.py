@@ -11,6 +11,8 @@ import os
 import sys
 import time
 import logging
+import datetime
+import jpholiday
 from pathlib import Path
 from playwright.async_api import async_playwright
 
