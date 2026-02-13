@@ -7,6 +7,7 @@ import json
 import time
 from pathlib import Path
 from datetime import datetime
+from PIL import Image
 
 import streamlit as st
 
@@ -286,7 +287,11 @@ def main():
                 img_path = SCREENSHOT_DIR / f"{qcode}{suffix}.png"
                 
                 if img_path.exists():
-                    st.image(str(img_path), use_container_width=True)
+                    try:
+                        image = Image.open(img_path)
+                        st.image(image, use_container_width=True)
+                    except Exception as e:
+                        st.error(f"画像読み込みエラー: {e}")
                 else:
                     # デバッグ表示
                     st.warning(f"画像未検出: {img_path.name}")
