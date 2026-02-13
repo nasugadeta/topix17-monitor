@@ -284,10 +284,22 @@ def main():
 
                 # チャート画像
                 img_path = SCREENSHOT_DIR / f"{qcode}{suffix}.png"
+                
                 if img_path.exists():
                     st.image(str(img_path), use_container_width=True)
                 else:
-                    st.info("📈 取得待ち...")
+                    # デバッグ表示
+                    st.warning(f"画像未検出: {img_path.name}")
+
+    # ── デバッグ用情報を下部に表示 ──
+    with st.expander("デバッグ情報 (管理者用)"):
+        st.write(f"SCREENSHOT_DIR: {SCREENSHOT_DIR.absolute()}")
+        if SCREENSHOT_DIR.exists():
+            files = [f.name for f in SCREENSHOT_DIR.glob("*") if f.name.endswith(".png")]
+            st.write(f"検出された画像ファイル ({len(files)}個):")
+            st.write(files)
+        else:
+            st.error("SCREENSHOT_DIRが存在しません")
 
     # ── 自動更新 ──
     # フッターに次回更新までのカウントダウン的な情報
