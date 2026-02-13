@@ -169,8 +169,6 @@ def inject_css():
         box-shadow: 0 2px 8px rgba(108,99,255,0.15);
     }
 
-    /* 画像下のキャプション非表示 */
-    div[data-testid="stImage"] > div:last-child { display: none; }
 
     /* サイドバー非表示 */
     section[data-testid="stSidebar"] { display: none; }
@@ -288,7 +286,6 @@ def main():
                 
                 if img_path.exists():
                     try:
-                        st.text(f"Found: {img_path.name}")  # デバッグ表示
                         image = Image.open(img_path)
                         st.image(image)
                     except Exception as e:
