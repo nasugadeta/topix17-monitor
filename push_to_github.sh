@@ -28,11 +28,11 @@ else:
 
   # 営業時間内(exit 0)の場合のみ処理
   if [ $? -eq 0 ]; then
-    if [[ -n $(git status -s screenshots/) ]]; then
+    if [[ -n $(git status -s) ]]; then
         timestamp=$(date "+%Y-%m-%d %H:%M:%S")
         echo "[$timestamp] 変更を検知しました。プッシュを実行します..."
         
-        git add screenshots/
+        git add .
         git commit -m "Update charts: $timestamp"
         git push origin main
         
