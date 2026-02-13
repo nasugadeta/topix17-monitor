@@ -288,8 +288,9 @@ def main():
                 
                 if img_path.exists():
                     try:
+                        st.text(f"Found: {img_path.name}")  # デバッグ表示
                         image = Image.open(img_path)
-                        st.image(image, use_container_width=True)
+                        st.image(image)
                     except Exception as e:
                         st.error(f"画像読み込みエラー: {e}")
                 else:
