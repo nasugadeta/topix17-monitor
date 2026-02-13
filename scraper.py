@@ -261,10 +261,77 @@ async def scrape_all_sectors():
     return success_count
 
 
+async def wait_until_market_open():
+    """現在時刻が市場オープン中（平日 9:00-11:30, 12:30-15:30）か確認し、
+    オープンしていなければ次の開始時刻まで待機する。
+    """
+    while True:
+        now = datetime.datetime.now()
+        
+        # 週末チェック
+        if now.weekday() >= 5:
+            # 次の月曜9:00まで待機
+            days_ahead = 7 - now.weekday()
+            next_start = (now + datetime.timedelta(days=days_ahead)).replace(hour=9, minute=0, second=0, microsecond=0)
+            wait_sec = (next_start - now).total_seconds()
+            logger.info(f"現在は週末です。次の開始時刻({next_start})まで待機します... ({wait_sec/3600:.1f}時間)")
+            await asyncio.sleep(wait_sec)
+            continue
+
+        # 祝日チェック
+        if jpholiday.is_holiday(now.date()):
+            # 明日の9:00まで待機（ループすれば週末チェックも入る）
+            next_start = (now + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
+            wait_sec = (next_start - now).total_seconds()
+            logger.info(f"現在は祝日です。次の開始時刻({next_start})まで待機します... ({wait_sec/3600:.1f}時間)")
+            await asyncio.sleep(wait_sec)
+            continue
+            
+        t = now.time()
+        start_am = datetime.time(9, 0)
+        end_am = datetime.time(11, 30)
+        start_pm = datetime.time(12, 30)
+        end_pm = datetime.time(15, 30)
+        
+        # 営業時間内チェック
+        is_am = start_am <= t <= end_am
+        is_pm = start_pm <= t <= end_pm
+        
+        if is_am or is_pm:
+            return  # 実行OK
+
+        # 待機時間を計算
+        wait_sec = 60 # デフォルト
+        next_msg = ""
+        
+        if t < start_am:
+            # 9:00まで待機
+            target = now.replace(hour=9, minute=0, second=0, microsecond=0)
+            wait_sec = (target - now).total_seconds()
+            next_msg = f"前場開始({target.time()})まで待機"
+        elif end_am < t < start_pm:
+            # 12:30まで待機
+            target = now.replace(hour=12, minute=30, second=0, microsecond=0)
+            wait_sec = (target - now).total_seconds()
+            next_msg = f"後場開始({target.time()})まで待機"
+        elif t > end_pm:
+            # 明日の9:00まで待機
+            target = (now + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
+            wait_sec = (target - now).total_seconds()
+            next_msg = f"翌日の開始({target})まで待機"
+        
+        if wait_sec > 0:
+            logger.info(f"現在は営業時間外です。{next_msg}します... ({wait_sec:.0f}秒)")
+            await asyncio.sleep(wait_sec)
+        else:
+            await asyncio.sleep(60) # フォールバック
+
+
 async def run_loop():
     """5分間隔で定期実行するメインループ"""
     logger.info("=== TOPIX-17業種 ETFチャート スクレイパー 起動 ===")
     while True:
+        await wait_until_market_open()  # 営業時間チェック＆待機
         start = time.time()
         await scrape_all_sectors()
         elapsed = time.time() - start

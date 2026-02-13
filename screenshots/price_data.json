@@ -6,9 +6,9 @@
     "direction": "up"
   },
   "1618": {
-    "price": "35,640",
-    "change": "-2,980",
-    "changePercent": "(-7.71%)",
+    "price": "35,630",
+    "change": "-2,990",
+    "changePercent": "(-7.74%)",
     "direction": "down"
   },
   "1619": {
@@ -24,9 +24,9 @@
     "direction": "down"
   },
   "1621": {
-    "price": "32,450",
-    "change": "+310",
-    "changePercent": "(+0.96%)",
+    "price": "32,410",
+    "change": "+270",
+    "changePercent": "(+0.84%)",
     "direction": "up"
   },
   "1622": {
@@ -36,9 +36,9 @@
     "direction": "up"
   },
   "1623": {
-    "price": "57,530",
-    "change": "-3,270",
-    "changePercent": "(-5.37%)",
+    "price": "57,750",
+    "change": "-3,050",
+    "changePercent": "(-5.01%)",
     "direction": "down"
   },
   "1624": {
@@ -48,9 +48,9 @@
     "direction": "down"
   },
   "1625": {
-    "price": "53,000",
-    "change": "-820",
-    "changePercent": "(-1.52%)",
+    "price": "52,910",
+    "change": "-910",
+    "changePercent": "(-1.69%)",
     "direction": "down"
   },
   "1626": {
@@ -60,9 +60,9 @@
     "direction": "down"
   },
   "1627": {
-    "price": "13,000",
-    "change": "-90",
-    "changePercent": "(-0.68%)",
+    "price": "12,970",
+    "change": "-120",
+    "changePercent": "(-0.91%)",
     "direction": "down"
   },
   "1628": {
@@ -84,9 +84,9 @@
     "direction": "down"
   },
   "1631": {
-    "price": "35,740",
-    "change": "-810",
-    "changePercent": "(-2.21%)",
+    "price": "35,750",
+    "change": "-800",
+    "changePercent": "(-2.18%)",
     "direction": "down"
   },
   "1632": {
@@ -96,9 +96,9 @@
     "direction": "down"
   },
   "1633": {
-    "price": "62,510",
-    "change": "-1,980",
-    "changePercent": "(-3.07%)",
+    "price": "62,530",
+    "change": "-1,960",
+    "changePercent": "(-3.03%)",
     "direction": "down"
   }
 }
