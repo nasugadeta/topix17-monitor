@@ -6,15 +6,15 @@
     "direction": "up"
   },
   "1618": {
-    "price": "36,420",
-    "change": "-2,200",
-    "changePercent": "(-5.69%)",
+    "price": "36,570",
+    "change": "-2,050",
+    "changePercent": "(-5.30%)",
     "direction": "down"
   },
   "1619": {
-    "price": "50,460",
-    "change": "-1,450",
-    "changePercent": "(-2.79%)",
+    "price": "50,490",
+    "change": "-1,420",
+    "changePercent": "(-2.73%)",
     "direction": "down"
   },
   "1620": {
@@ -24,10 +24,10 @@
     "direction": "down"
   },
   "1621": {
-    "price": "32,140",
-    "change": "0",
-    "changePercent": "(0.00%)",
-    "direction": "flat"
+    "price": "32,210",
+    "change": "+70",
+    "changePercent": "(+0.21%)",
+    "direction": "up"
   },
   "1622": {
     "price": "39,860",
@@ -36,9 +36,9 @@
     "direction": "up"
   },
   "1623": {
-    "price": "59,240",
-    "change": "-1,560",
-    "changePercent": "(-2.56%)",
+    "price": "59,150",
+    "change": "-1,650",
+    "changePercent": "(-2.71%)",
     "direction": "down"
   },
   "1624": {
@@ -54,16 +54,16 @@
     "direction": "down"
   },
   "1626": {
-    "price": "38,950",
-    "change": "-1,200",
-    "changePercent": "(-2.98%)",
+    "price": "38,900",
+    "change": "-1,250",
+    "changePercent": "(-3.11%)",
     "direction": "down"
   },
   "1627": {
-    "price": "13,105",
-    "change": "+15",
-    "changePercent": "(+0.11%)",
-    "direction": "up"
+    "price": "13,065",
+    "change": "-25",
+    "changePercent": "(-0.19%)",
+    "direction": "down"
   },
   "1628": {
     "price": "21,930",
@@ -72,9 +72,9 @@
     "direction": "down"
   },
   "1629": {
-    "price": "142,600",
-    "change": "-750",
-    "changePercent": "(-0.52%)",
+    "price": "142,700",
+    "change": "-650",
+    "changePercent": "(-0.45%)",
     "direction": "down"
   },
   "1630": {
@@ -84,9 +84,9 @@
     "direction": "down"
   },
   "1631": {
-    "price": "36,050",
-    "change": "-500",
-    "changePercent": "(-1.36%)",
+    "price": "36,080",
+    "change": "-470",
+    "changePercent": "(-1.28%)",
     "direction": "down"
   },
   "1632": {
