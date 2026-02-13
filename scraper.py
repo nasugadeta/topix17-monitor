@@ -9,7 +9,6 @@ import random
 import json
 import os
 import sys
-import subprocess
 import time
 import logging
 import datetime
@@ -172,31 +171,22 @@ async def capture_chart(page, qcode: str, sector_name: str) -> dict | None:
         # 値動きデータを抽出
         price_data = await extract_price_data(page)
 
-        # ── 1) 日足 (Daily) をキャプチャ ──
-        # UI非表示化して撮影
+        # ── 1) 日足チャートをキャプチャ (デフォルト表示) ──
         await hide_non_chart_elements(page)
-        await asyncio.sleep(random.uniform(0.5, 1.5))
+        await asyncio.sleep(random.uniform(0.5, 1.5))  # 人間らしい遅延
         await take_chart_screenshot(page, daily_path)
 
-        # ── 2) 日中足 (Intraday) をキャプチャ ──
-        # ※ページをリロードしてUIを復活させる (非表示のままではタブが押せないため)
-        await page.reload(wait_until="domcontentloaded")
-        await page.wait_for_load_state("networkidle", timeout=30000)
-
-        # 日中足タブへ切り替え
+        # ── 2) 日中足チャートをキャプチャ ──
         try:
             intraday_tab = page.locator("text=日中足").first
             await intraday_tab.click(timeout=5000)
             await page.wait_for_load_state("networkidle", timeout=15000)
-            await asyncio.sleep(2.0) # チャート描画待ち
-        except Exception as e:
-            logger.warning(f"[{qcode}] 日中足タブ切り替え失敗: {e}")
-            # 失敗してもそのまま進む (Dailyのままになる可能性あり)
-            pass
+            await asyncio.sleep(2)
+        except Exception:
+            await asyncio.sleep(1.5)
 
-        # UI非表示化して撮影
         await hide_non_chart_elements(page)
-        await asyncio.sleep(random.uniform(0.5, 1.5))
+        await asyncio.sleep(random.uniform(0.5, 1.5))  # 人間らしい遅延
         await take_chart_screenshot(page, intraday_path)
 
         logger.info(f"[{qcode}] {sector_name} - 保存完了 | {price_data.get('change', '')} {price_data.get('changePercent', '')}")
@@ -235,33 +225,24 @@ async def create_browser_context(p):
     return browser, context
 
 
+
 def save_price_data(all_price_data: dict):
-    """全業種の値動きデータをJSONファイルに保存"""
+    """全業種の値動きデータをJSONファイルに保存 (既存データを読み込んで更新)"""
     PRICE_DATA_FILE.parent.mkdir(exist_ok=True)
+    
+    current_data = {}
+    if PRICE_DATA_FILE.exists():
+        try:
+            with open(PRICE_DATA_FILE, "r", encoding="utf-8") as f:
+                current_data = json.load(f)
+        except Exception as e:
+            logger.warning(f"既存データの読み込み失敗: {e}")
+
+    # 新しいデータで更新
+    current_data.update(all_price_data)
+
     with open(PRICE_DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(all_price_data, f, ensure_ascii=False, indent=2)
-
-
-
-def git_push():
-    """screenshotsフォルダの変更をGitHubにプッシュする"""
-    try:
-        # 変更があるか確認
-        status = subprocess.run(["git", "status", "-s"], capture_output=True, text=True, check=True)
-        if not status.stdout.strip():
-            logger.info("変更なしのためプッシュをスキップします")
-            return
-
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        logger.info(f"[{timestamp}] 変更を検知しました。プッシュを実行します...")
-        
-        subprocess.run(["git", "add", "."], check=True)
-        subprocess.run(["git", "commit", "-m", f"Update charts: {timestamp}"], check=True)
-        subprocess.run(["git", "push", "origin", "main"], check=True)
-        
-        logger.info(f"[{timestamp}] プッシュ成功！")
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Gitプッシュ失敗: {e}")
+        json.dump(current_data, f, ensure_ascii=False, indent=2)
 
 
 async def scrape_all_sectors():
@@ -369,9 +350,6 @@ async def run_loop():
         elapsed = time.time() - start
         logger.info(f"1サイクル完了 ({elapsed:.1f}秒)")
 
-        # GitHubへプッシュ
-        git_push()
-
         wait_time = max(0, LOOP_INTERVAL - elapsed)
         if wait_time > 0:
             logger.info(f"次の更新まで {wait_time:.0f}秒 待機...")
@@ -389,8 +367,6 @@ async def test_single():
         if price_data:
             save_price_data({"1617": price_data})
             logger.info(f"テスト結果: {json.dumps(price_data, ensure_ascii=False)}")
-            # テスト時もプッシュする
-            git_push()
         await browser.close()
 
 
